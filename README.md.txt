@@ -12,7 +12,7 @@ I combine:
 - **Multi-signal analysis** for more accurate threat detection
 
 ## 📊 Results
-Our ML model outperformed traditional keyword filters:
+My ML model outperformed traditional keyword filters:
 - **Keyword Filter F1-Score:** 0.45
 - **Our ML Model F1-Score:** 0.89
 
