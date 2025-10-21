@@ -1,0 +1,73 @@
+import pandas as pd
+import random
+from faker import Faker
+
+# Initialize Faker for generating realistic text
+fake = Faker()
+
+def generate_synthetic_dataset(num_samples=1000):
+    """
+    WHY: We're creating two types of chats:
+    - NORMAL: Regular game conversations (label 0)
+    - GROOMING: Potentially dangerous conversations (label 1)
+    """
+    
+    # NORMAL GAME CHATS - these are safe, everyday conversations
+    normal_chats = [
+        "gg wp", "good game everyone", "let's play again tomorrow",
+        "nice shot!", "where are you on the map?", "follow me",
+        "I need healing", "watch out behind you", "great teamwork",
+        "anyone want to team up?", "I'm going to capture the flag",
+        "defend the base!", "any tips for this level?", "that was close!",
+        "I'll support you", "we almost won that round", "lol that was funny",
+        "brb need to grab water", "thanks for the help!", "let's try again"
+    ]
+    
+    # GROOMING PATTERNS - based on real research about online predators
+    grooming_patterns = {
+        'information_seeking': [
+            "how old are you?", "what grade are you in?", "where do you go to school?",
+            "what's your real name?", "where do you live?", "what's your phone number?",
+            "do you have snapchat?", "are your parents home?", "what are you wearing?",
+            "can we talk somewhere else?", "do you want to be friends outside the game?"
+        ],
+        'isolation_secrecy': [
+            "don't tell anyone we're talking", "this can be our little secret",
+            "your parents wouldn't understand our friendship", "you can trust me more than them",
+            "let's keep this between us", "I won't tell if you don't tell"
+        ],
+        'emotional_manipulation': [
+            "you're so mature for your age", "I feel like I can really talk to you",
+            "other kids don't understand me like you do", "we have a special connection",
+            "if you really cared about me, you'd send me a picture"
+        ]
+    }
+    
+    data = []
+    
+    # Generate NORMAL chats (label 0 = safe)
+    for _ in range(num_samples // 2):
+        chat = random.choice(normal_chats)
+        data.append({'text': chat, 'label': 0, 'type': 'normal'})
+    
+    # Generate GROOMING chats (label 1 = dangerous)
+    for _ in range(num_samples // 2):
+        pattern = random.choice(list(grooming_patterns.keys()))
+        chat = random.choice(grooming_patterns[pattern])
+        data.append({'text': chat, 'label': 1, 'type': pattern})
+    
+    # Mix them up randomly so the model doesn't learn the order
+    random.shuffle(data)
+    
+    # Save to CSV file
+    df = pd.DataFrame(data)
+    df.to_csv('data/synthetic_chats.csv', index=False)
+    
+    print(f"✅ Generated {len(data)} synthetic chat samples")
+    print(f"📊 Normal chats: {len([x for x in data if x['label'] == 0])}")
+    print(f"📊 Grooming chats: {len([x for x in data if x['label'] == 1])}")
+    return df
+
+# This runs when you execute the file directly
+if __name__ == "__main__":
+    generate_synthetic_dataset()
