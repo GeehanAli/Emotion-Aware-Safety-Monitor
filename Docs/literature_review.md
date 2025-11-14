@@ -1,3 +1,5 @@
+# Literature Review
+
 ## Key Research Papers
 
 ### 1. Leiva-Bianchi et al. (2025)
@@ -18,3 +20,4 @@ Multi-modal grooming detection with 95.3% accuracy using OCR + transformers
 - Limited work on real-time gaming environments
 - Most research uses static chat logs
 - Few solutions for live, in-game chat detection
+
