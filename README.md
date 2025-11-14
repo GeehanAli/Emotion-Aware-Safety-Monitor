@@ -41,3 +41,40 @@ My approach demonstrates improvement over multiple baselines:
 4. Run baseline comparison: `python models/ml_model.py`
 
 ## 📁 Project Structure
+emotion-aware-safety-monitor/
+│
+├── data/
+│ └── synthetic_chats.csv # Research-based synthetic dataset
+│
+├── models/
+│ ├── baseline_model.py # Keyword filter + literature baselines
+│ └── ml_model.py # Multi-signal ML model with comparisons
+│
+├── notebooks/
+│ └── 01_analysis_and_results.ipynb # Complete analysis vs literature
+│
+├── docs/
+│ ├── project_approach.md # Research methodology
+│ └── literature_review.md # Academic foundations
+│
+├── requirements.txt # Python dependencies
+├── .gitignore # Files to exclude from Git
+└── README.md # Project overview
+
+
+## 🆕 Novel Contributions
+While building on established ML approaches, this project introduces:
+- **Real-time gaming context awareness** (research gap identified in literature)
+- **Multi-signal safety index** beyond text-only approaches
+- **Ethical synthetic data strategy** for gaming platforms
+
+## 🔮 Future Work
+- Integrate behavioral anomaly detection specific to gaming patterns
+- Develop real-time alert system with gaming platform APIs  
+- Cross-cultural adaptation based on gaming community norms
+
+## 📄 License
+MIT License
+
+## 🙏 Acknowledgments
+This project builds upon the foundational work of researchers in online grooming detection, particularly the systematic review by Leiva-Bianchi et al. (2025).
