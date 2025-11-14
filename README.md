@@ -41,26 +41,19 @@ My approach demonstrates improvement over multiple baselines:
 4. Run baseline comparison: `python models/ml_model.py`
 
 ## 📁 Project Structure
-```emotion-aware-safety-monitor/
-│
-├── data/
-│ └── synthetic_chats.csv # Research-based synthetic dataset
-│
-├── models/
-│ ├── baseline_model.py # Keyword filter + literature baselines
-│ └── ml_model.py # Multi-signal ML model with comparisons
-│
-├── notebooks/
-│ └── 01_analysis_and_results.ipynb # Complete analysis vs literature
-│
-├── docs/
-│ ├── project_approach.md # Research methodology
-│ └── literature_review.md # Academic foundations
-│
-├── requirements.txt # Python dependencies
-├── .gitignore # Files to exclude from Git
-└── README.md # Project overview```
-
+- **data/**
+  - `synthetic_chats.csv` - Research-based synthetic dataset
+- **models/**
+  - `baseline_model.py` - Keyword filter + literature baselines
+  - `ml_model.py` - Multi-signal ML model with comparisons
+- **notebooks/**
+  - `01_analysis_and_results.ipynb` - Complete analysis vs literature
+- **docs/**
+  - `project_approach.md` - Research methodology
+  - `literature_review.md` - Academic foundations
+- `requirements.txt` - Python dependencies
+- `.gitignore` - Files to exclude from Git
+- `README.md` - Project overview
 
 ## 🆕 Novel Contributions
 While building on established ML approaches, this project introduces:
