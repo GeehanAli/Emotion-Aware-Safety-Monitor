@@ -41,7 +41,7 @@ My approach demonstrates improvement over multiple baselines:
 4. Run baseline comparison: `python models/ml_model.py`
 
 ## 📁 Project Structure
-emotion-aware-safety-monitor/
+```emotion-aware-safety-monitor/
 │
 ├── data/
 │ └── synthetic_chats.csv # Research-based synthetic dataset
@@ -59,7 +59,7 @@ emotion-aware-safety-monitor/
 │
 ├── requirements.txt # Python dependencies
 ├── .gitignore # Files to exclude from Git
-└── README.md # Project overview
+└── README.md # Project overview```
 
 
 ## 🆕 Novel Contributions
@@ -77,4 +77,5 @@ While building on established ML approaches, this project introduces:
 MIT License
 
 ## 🙏 Acknowledgments
-This project builds upon the foundational work of researchers in online grooming detection, particularly the systematic review by Leiva-Bianchi et al. (2025).
+This project builds upon the foundational work of researchers in online grooming detection,
+ particularly the systematic review by Leiva-Bianchi et al. (2025).
