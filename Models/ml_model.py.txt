@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix, f1_score
+from sklearn.metrics import classification_report, confusion_matrix, f1_score, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -31,39 +31,57 @@ class ProvenBaselines:
         return self.mlp_model
 
 class SafetyMonitor:
+    """
+    Enhanced safety monitor with research baselines
+    Builds on established grooming detection literature
+    """
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(max_features=1000, stop_words='english', ngram_range=(1, 2))
+        self.vectorizer = TfidfVectorizer(
+            max_features=1000, 
+            stop_words='english', 
+            ngram_range=(1, 2)  # Capture phrases like "phone number"
+        )
         self.model = LogisticRegression(random_state=42, max_iter=1000)
         self.is_trained = False
     
     def load_data(self):
+        """Load our synthetic dataset"""
         df = pd.read_csv('data/synthetic_chats.csv')
         return df['text'], df['label']
     
     def prepare_data(self):
+        """Prepare data for training and testing"""
         X, y = self.load_data()
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
         X_train_vec = self.vectorizer.fit_transform(X_train)
         X_test_vec = self.vectorizer.transform(X_test)
-        return X_train_vec, X_test_vec, y_train, y_test
+        return X_train_vec, X_test_vec, X_train, X_test, y_train, y_test
     
     def train(self):
-        print("🔄 Training Safety Monitor with Research Baselines...")
-        X_train_vec, X_test_vec, y_train, y_test = self.prepare_data()
+        """Train the model and compare with research baselines"""
+        print("🔄 Training Enhanced Safety Monitor...")
+        print("📚 Including research-proven baselines from literature")
         
-        # Train main model
+        X_train_vec, X_test_vec, X_train, X_test, y_train, y_test = self.prepare_data()
+        
+        # Train our main model
+        print("🤖 Training our logistic regression model...")
         self.model.fit(X_train_vec, y_train)
-        self.accuracy = self.model.score(X_test_vec, y_test)
+        our_predictions = self.model.predict(X_test_vec)
+        self.accuracy = accuracy_score(y_test, our_predictions)
+        self.f1 = f1_score(y_test, our_predictions)
         
         # Compare with research baselines
-        self.compare_with_proven_baselines(X_test_vec, y_test, X_train_vec, y_train)
+        self.compare_with_proven_baselines(X_train_vec, X_test_vec, y_train, y_test)
         
         self.is_trained = True
-        return self.accuracy
+        return self.accuracy, self.f1
     
-    def compare_with_proven_baselines(self, X_test, y_test, X_train, y_train):
+    def compare_with_proven_baselines(self, X_train_vec, X_test_vec, y_train, y_test):
         """
-        Compare my model against literature-proven baselines
+        Compare our model against literature-proven baselines
         """
         print("\n📊 COMPARISON WITH PROVEN BASELINES FROM LITERATURE")
         print("=" * 60)
@@ -71,43 +89,100 @@ class SafetyMonitor:
         baselines = ProvenBaselines()
         
         # Train and test SVM (literature's best F1-score)
-        svm_model = baselines.train_svm(X_train, y_train)
-        svm_accuracy = svm_model.score(X_test, y_test)
-        svm_pred = svm_model.predict(X_test)
-        svm_f1 = f1_score(y_test, svm_pred)
+        print("🔬 Training SVM baseline (literature's best F1-score)...")
+        svm_model = baselines.train_svm(X_train_vec, y_train)
+        svm_predictions = svm_model.predict(X_test_vec)
+        svm_accuracy = accuracy_score(y_test, svm_predictions)
+        svm_f1 = f1_score(y_test, svm_predictions)
         
         # Train and test MLP (literature's best accuracy)  
-        mlp_model = baselines.train_mlp(X_train, y_train)
-        mlp_accuracy = mlp_model.score(X_test, y_test)
-        mlp_pred = mlp_model.predict(X_test)
-        mlp_f1 = f1_score(y_test, mlp_pred)
+        print("🔬 Training MLP baseline (literature's best accuracy)...")
+        mlp_model = baselines.train_mlp(X_train_vec, y_train)
+        mlp_predictions = mlp_model.predict(X_test_vec)
+        mlp_accuracy = accuracy_score(y_test, mlp_predictions)
+        mlp_f1 = f1_score(y_test, mlp_predictions)
         
-        # Our model's F1 score
-        our_pred = self.model.predict(X_test)
-        our_f1 = f1_score(y_test, our_pred)
+        # Get our model predictions for comparison
+        our_predictions = self.model.predict(X_test_vec)
+        our_accuracy = self.accuracy
+        our_f1 = self.f1
         
-        print(f"🤖 Our Model:      Accuracy: {self.accuracy:.4f}, F1: {our_f1:.4f}")
-        print(f"📚 SVM Baseline:   Accuracy: {svm_accuracy:.4f}, F1: {svm_f1:.4f}")
-        print(f"📚 MLP Baseline:   Accuracy: {mlp_accuracy:.4f}, F1: {mlp_f1:.4f}")
+        print(f"\n🏆 PERFORMANCE COMPARISON:")
+        print(f"{'Model':<20} {'Accuracy':<10} {'F1-Score':<10}")
+        print(f"{'-'*40}")
+        print(f"{'Our Model':<20} {our_accuracy:.4f}     {our_f1:.4f}")
+        print(f"{'SVM (Literature)':<20} {svm_accuracy:.4f}     {svm_f1:.4f}")
+        print(f"{'MLP (Literature)':<20} {mlp_accuracy:.4f}     {mlp_f1:.4f}")
         
-        # Show improvement over literature baselines
-        improvement_over_svm = our_f1 - svm_f1
-        improvement_over_mlp = our_f1 - mlp_f1
+        # Calculate improvements
+        improvement_svm_f1 = our_f1 - svm_f1
+        improvement_mlp_f1 = our_f1 - mlp_f1
         
-        print(f"\n📈 Improvement over SVM:  {improvement_over_svm:+.4f}")
-        print(f"📈 Improvement over MLP:  {improvement_over_mlp:+.4f}")
+        print(f"\n📈 IMPROVEMENT OVER LITERATURE:")
+        print(f"F1 improvement over SVM:  {improvement_svm_f1:+.4f}")
+        print(f"F1 improvement over MLP:  {improvement_mlp_f1:+.4f}")
+        
+        # Show what this means practically
+        print(f"\n💡 PRACTICAL IMPACT:")
+        print(f"If SVM misses {((1-svm_f1)*100):.1f}% of dangerous chats...")
+        print(f"Our model could reduce misses by {(improvement_svm_f1*100):.1f}%")
+    
+    def predict_message(self, message):
+        """Predict if a single message is grooming"""
+        if not self.is_trained:
+            raise ValueError("Model not trained yet. Call train() first.")
+        
+        message_vec = self.vectorizer.transform([message])
+        prediction = self.model.predict(message_vec)[0]
+        probability = self.model.predict_proba(message_vec)[0]
+        
+        result = {
+            'message': message,
+            'prediction': 'Grooming' if prediction == 1 else 'Normal',
+            'confidence': max(probability),
+            'probabilities': {
+                'Normal': probability[0],
+                'Grooming': probability[1]
+            }
+        }
+        return result
 
 def main():
-    """Main function to run the enhanced safety monitor"""
+    """Main function to run the complete analysis"""
     print("🎮 Emotion-Aware Safety Monitor - Research Edition")
     print("Building on established grooming detection literature...")
+    print("=" * 60)
     
+    # First run the keyword baseline for comparison
+    print("\n1. First, let's check the keyword filter baseline...")
+    from baseline_model import evaluate_baseline
+    keyword_accuracy, keyword_f1 = evaluate_baseline()
+    
+    print("\n2. Now testing our enhanced ML approach with research baselines...")
     monitor = SafetyMonitor()
-    accuracy = monitor.train()
+    our_accuracy, our_f1 = monitor.train()
     
-    print(f"\n✅ Final Results:")
-    print(f"   Our model achieved {accuracy:.4f} accuracy")
-    print(f"   With comparison to research-proven baselines")
+    print(f"\n" + "="*60)
+    print("🎯 FINAL SUMMARY")
+    print("="*60)
+    print(f"🔍 Keyword Filter:    Accuracy: {keyword_accuracy:.4f}, F1: {keyword_f1:.4f}")
+    print(f"🤖 Our ML Model:      Accuracy: {our_accuracy:.4f}, F1: {our_f1:.4f}")
+    print(f"📈 Improvement:       F1-Score: +{(our_f1 - keyword_f1):.4f}")
+    
+    # Test some example messages
+    print(f"\n🧪 EXAMPLE PREDICTIONS:")
+    test_messages = [
+        "how old are you?",
+        "gg everyone that was fun",
+        "don't tell your parents we're talking",
+        "what's your phone number?",
+        "let's play again tomorrow"
+    ]
+    
+    for msg in test_messages:
+        result = monitor.predict_message(msg)
+        confidence_color = "🟢" if result['confidence'] > 0.8 else "🟡" if result['confidence'] > 0.6 else "🔴"
+        print(f"{confidence_color} '{msg}' → {result['prediction']} (conf: {result['confidence']:.2f})")
 
 if __name__ == "__main__":
     main()
